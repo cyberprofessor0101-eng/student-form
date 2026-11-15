@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ckb" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Registration Form</title>
+  <title>فۆرمی زانیاری خوێندکاران</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
     body {
       margin: 0;
       padding: 16px;
@@ -21,7 +24,10 @@
       border-radius: 14px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
-    h2 { margin: 0 0 8px; font-size: 20px; }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
     .tg-badge {
       padding: 10px 12px;
       border-radius: 10px;
@@ -39,10 +45,11 @@
       font-size: 13px;
       margin-bottom: 16px;
       display: none;
+      line-height: 1.5;
     }
     label {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       margin-bottom: 6px;
     }
@@ -56,6 +63,10 @@
       background: var(--tg-theme-bg-color, #ffffff);
       color: var(--tg-theme-text-color, #111827);
     }
+    input.ltr-input {
+      direction: ltr;
+      text-align: right;
+    }
     button {
       width: 100%;
       padding: 14px;
@@ -67,7 +78,10 @@
       background: var(--tg-theme-button-color, #2481cc);
       color: var(--tg-theme-button-text-color, #ffffff);
     }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     #status {
       margin-top: 12px;
       text-align: center;
@@ -78,33 +92,32 @@
 </head>
 <body>
   <div class="card">
-    <h2>Student Information</h2>
-    <div id="tgUserBox" class="tg-badge">Detecting Telegram account...</div>
+    <h2>زانیارییەکانی خوێندکار</h2>
+    <div id="tgUserBox" class="tg-badge">دۆزینەوەی هەژماری تێلێگرام...</div>
     <div id="outsideWarn" class="warn-badge">
+      تکایە ئەم فۆرمە لە ڕێگەی لینکەکەی ناو گرووپی تێلێگرامەوە بکەرەوە بۆ ئەوەی هەژمارەکەت بە شێوەی خۆکار بناسرێتەوە.
     </div>
-      Please open this form from the Telegram link inside the group so your username can be detected.
 
     <form id="studentForm">
-      <label for="fullName">1. Full Name</label>
-      <input type="text" id="fullName" placeholder="Enter your full name" required />
+      <label for="fullName">١. ناوی تەواو</label>
+      <input type="text" id="fullName" placeholder="ناوی سیانی یان تەواوت بنووسە" required />
 
-      <label for="location">2. Location</label>
-      <input type="text" id="location" placeholder="City / Area" required />
+      <label for="location">٢. شوێنی نیشتەجێبوون</label>
+      <input type="text" id="location" placeholder="شار / گەڕەک بنووسە" required />
 
-      <label for="phone">3. Phone Number</label>
-      <input type="tel" id="phone" placeholder="e.g. 07xxxxxxxxx" required />
+      <label for="phone">٣. ژمارەی مۆبایل</label>
+      <input type="tel" id="phone" class="ltr-input" placeholder="0750xxxxxxx" required />
 
-      <label for="email">4. Email</label>
-      <input type="email" id="email" placeholder="example@gmail.com" required />
+      <label for="email">٤. ئیمەیڵ</label>
+      <input type="email" id="email" class="ltr-input" placeholder="example@gmail.com" required />
 
-      <button type="submit" id="submitBtn">Send</button>
+      <button type="submit" id="submitBtn">ناردن</button>
       <div id="status"></div>
     </form>
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5pmRu5VHCo3EGpvtFn_wggG98Ir8mbNrQZ2AI4C8CedBU15M2LqdRlKACjtmL1YIBKA/exec";
-
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5pmRu5VHCo3EGpvtFn_wggG98Ir8mbNrQZ2AI4C8CedBU15M2LqdRlKACjtmL1YIBKA/exec";
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -123,9 +136,14 @@
       detectedName = [user.first_name, user.last_name].filter(Boolean).join(" ");
 
       if (detectedUsername) {
-        tgUserBox.textContent = "Telegram Account: @" + detectedUsername;
+        tgUserBox.textContent = "هەژماری تێلێگرام: ";
+        const span = document.createElement("span");
+        span.dir = "ltr";
+        span.style.display = "inline-block";
+        span.textContent = "@" + detectedUsername;
+        tgUserBox.appendChild(span);
       } else {
-        tgUserBox.textContent = "Telegram Account: " + detectedName + " (No @username set)";
+        tgUserBox.textContent = "هەژماری تێلێگرام: " + detectedName + " (یوزەرنەیمی @ نییە)";
       }
     } else {
       tgUserBox.style.display = "none";
@@ -139,7 +157,7 @@
       const status = document.getElementById("status");
 
       btn.disabled = true;
-      btn.textContent = "Sending...";
+      btn.textContent = "دەنێردرێت...";
       status.textContent = "";
 
       const payload = {
@@ -163,7 +181,7 @@
         const result = await res.json();
         if (result.ok) {
           status.style.color = "green";
-          status.textContent = "✅ Sent successfully!";
+          status.textContent = "✅ زانیارییەکانت بە سەرکەوتوویی نێردران!";
           document.getElementById("studentForm").reset();
           setTimeout(() => tg.close(), 1500);
         } else {
@@ -171,9 +189,9 @@
         }
       } catch (err) {
         status.style.color = "red";
-        status.textContent = "❌ Error sending. Please try again.";
+        status.textContent = "❌ کێشەیەک ڕوویدا لە کاتی ناردن، تکایە دووبارە هەوڵبدەرەوە.";
         btn.disabled = false;
-        btn.textContent = "Send";
+        btn.textContent = "ناردن";
       }
     });
   </script>
